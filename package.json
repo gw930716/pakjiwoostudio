@@ -1,0 +1,11 @@
+{
+  "name": "pakjiwoostudio",
+  "version": "8.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build-data.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

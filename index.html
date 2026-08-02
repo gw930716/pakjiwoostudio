@@ -16,6 +16,7 @@
     <button data-route="contact">CONTACT</button>
   </nav>
 </aside>
+
 <main>
   <section id="home" class="view active">
     <div class="hero">
@@ -25,29 +26,50 @@
       <div class="hero-caption"><span id="heroTitle">HOME</span><span id="heroCount"></span></div>
     </div>
   </section>
+
   <section id="project" class="view archive">
-    <div class="archive-head"><span class="eyebrow">PROJECT</span><div id="projectList" class="project-list"></div></div>
+    <div class="archive-head">
+      <span class="eyebrow">PROJECT</span>
+      <div id="projectList" class="project-list"></div>
+    </div>
     <div id="projectFeed" class="editorial-feed"></div>
   </section>
+
   <section id="commercial" class="view archive">
     <div class="archive-head">
       <span class="eyebrow">COMMERCIAL</span>
-      <div class="commercial-placeholder">
-        <span>Brand and campaign structure is ready for the next update.</span>
-        <span>Commercial photographs will be added later.</span>
-      </div>
+      <div id="commercialList" class="commercial-list"></div>
     </div>
+    <div id="commercialFeed" class="editorial-feed"></div>
   </section>
+
   <section id="contact" class="view contact">
     <span class="eyebrow">CONTACT</span>
     <a href="mailto:gwoocolor@gmail.com">gwoocolor@gmail.com</a>
     <a href="https://instagram.com/pakjiwoo" target="_blank" rel="noreferrer">@pakjiwoo</a>
   </section>
+
+  <section id="brand" class="view brand-view">
+    <div class="brand-head">
+      <button id="brandBack">← COMMERCIAL</button>
+      <div>
+        <h1 id="brandTitle"></h1>
+        <p id="brandDescription"></p>
+        <div id="campaignList" class="campaign-list"></div>
+      </div>
+    </div>
+    <div id="brandFeed" class="editorial-feed"></div>
+  </section>
+
   <section id="detail" class="view detail">
-    <div class="detail-top"><button id="backBtn">← BACK</button><span id="detailTitle"></span></div>
+    <div class="detail-top">
+      <button id="backBtn">← BACK</button>
+      <span id="detailTitle"></span>
+    </div>
     <div id="detailGallery" class="detail-gallery"></div>
   </section>
 </main>
+
 <div id="lightbox" class="lightbox" aria-hidden="true">
   <button id="closeLightbox" class="close-lightbox" aria-label="Close">×</button>
   <button id="lightPrev" class="light-zone left" aria-label="Previous image"></button>
@@ -55,6 +77,7 @@
   <button id="lightNext" class="light-zone right" aria-label="Next image"></button>
   <div id="lightCounter" class="light-counter"></div>
 </div>
+
 <script src="data.js"></script>
 <script src="script.js"></script>
 </body>
