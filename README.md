@@ -1,105 +1,76 @@
-# Pakjiwoo Studio V8 — Automatic Folder Structure
+# Pakjiwoo Studio V9
 
-This version automatically scans image folders during every Vercel deployment.
-
-## Folder structure
+## Project structure
 
 ```text
-images/
-├── home/
-│   ├── 001.jpg
-│   └── 002.jpg
-├── project/
-│   └── project-folder/
-│       ├── 001.jpg
-│       └── 002.jpg
-└── commercial/
-    └── category/
-        └── brand/
-            └── campaign/
-                ├── 001.jpg
-                └── 002.jpg
+images/project/
+├── fashion-editorial/
+│   ├── city-woman/
+│   ├── tokyo-movement-2024/
+│   ├── swim-in-peace/
+│   └── night-in-seoul-city-2023/
+├── travel-series/
+│   ├── japan/
+│   │   ├── kyoto-vol-1/
+│   │   ├── kyoto-vol-2/
+│   │   └── ...
+│   ├── california/
+│   └── mongolia/
+├── film-work-2020-2023/
+└── maurizio-cattelan-x-leeum-museum/
 ```
 
-## Home slideshow
+## Commercial order
 
-Add images to `images/home/`.
+1. Fashion
+2. Beauty / Skincare
+3. Lifestyle / Wellness
+4. Artist / Event
 
-Filename order controls slideshow order:
+The order is controlled by each category's `_meta.json`.
 
-```text
-001.jpg
-002.jpg
-003.jpg
-```
+## Adding a new Project section
 
-## Add a personal project
-
-Create a folder inside `images/project/` and put images inside it.
-
-Example:
-
-```text
-images/project/new-project/001.jpg
-```
-
-The website automatically displays `New Project`.
-
-For a custom title, add `_meta.json`:
+Create a folder inside `images/project/` and add `_meta.json`:
 
 ```json
 {
-  "title": "New Project, 2026",
-  "group": "Projects"
+  "title": "New Section",
+  "order": 5
 }
 ```
 
-## Add a commercial campaign
+## Adding a project
 
-Create the following nested folders:
-
-```text
-images/commercial/fashion/marithe/26fw-campaign/
-```
-
-Put the campaign images inside that folder.
-
-The website will automatically create:
+Create a folder inside a section and place numbered images inside:
 
 ```text
-Commercial
-→ MARITHÉ
-→ 26fw Campaign
-→ Gallery
+images/project/fashion-editorial/new-project/
+├── 001.jpg
+├── 002.jpg
+└── _meta.json
 ```
-
-Use `_meta.json` inside any category, brand or campaign folder for exact display text.
-
-Example:
 
 ```json
 {
-  "title": "26FW Campaign"
+  "title": "New Project"
 }
 ```
 
-## Updating the website
+## Adding a nested collection
 
-1. Add or rearrange folders and images in Finder.
-2. Open GitHub Desktop.
-3. Enter a Summary.
-4. Click `Commit to main`.
-5. Click `Push origin`.
-6. Vercel rebuilds the site automatically.
-
-## Image order
-
-Images are sorted naturally by filename. Use:
+You can create another folder level, as used by Japan:
 
 ```text
-001.jpg
-002.jpg
-003.jpg
+images/project/travel-series/japan/new-volume/001.jpg
 ```
 
-No image is automatically cropped.
+Vercel scans all folder levels automatically.
+
+## Updating
+
+1. Change folders or images in Finder.
+2. GitHub Desktop → Summary.
+3. Commit to main.
+4. Push origin.
+5. Vercel automatically rebuilds.

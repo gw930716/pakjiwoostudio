@@ -1,6 +1,6 @@
-const DATA=window.PORTFOLIO_DATA||{home:[],projects:[],commercial:[]};
+const DATA=window.PORTFOLIO_DATA||{home:[],projectSections:[],commercial:[]};
 const views=[...document.querySelectorAll(".view")];
-let currentView="home",previousView="project",heroIndex=0,currentLightImages=[],lightIndex=0,currentBrand=null;
+let currentView="home",previousView="project",heroIndex=0,currentLightImages=[],lightIndex=0;
 
 function show(id){
   views.forEach(v=>v.classList.toggle("active",v.id===id));
@@ -39,10 +39,15 @@ document.getElementById("nextHero").addEventListener("click",()=>{
   renderHero();
 });
 
+function flattenImages(node){
+  return [
+    ...(node.images||[]),
+    ...(node.children||[]).flatMap(flattenImages)
+  ];
+}
 function createFeed(container,items,onClick){
   container.innerHTML="";
-  items.forEach((item,index)=>{
-    if(!item.src)return;
+  items.filter(item=>item.src).forEach((item,index)=>{
     const figure=document.createElement("figure");
     figure.className="feed-item";
     const image=document.createElement("img");
@@ -55,32 +60,73 @@ function createFeed(container,items,onClick){
   });
 }
 
-const grouped={};
-DATA.projects.forEach(project=>(grouped[project.group||"Projects"]??=[]).push(project));
 const projectList=document.getElementById("projectList");
-Object.entries(grouped).forEach(([group,projects])=>{
-  const wrap=document.createElement("div");
-  wrap.className="project-group";
-  wrap.innerHTML=`<h3>${group}</h3>`;
-  projects.forEach(project=>{
+const projectFeedItems=[];
+DATA.projectSections.forEach(section=>{
+  const sectionEl=document.createElement("div");
+  sectionEl.className="project-group";
+  sectionEl.innerHTML=`<h3>${section.title}</h3>`;
+
+  if(!section.items.length){
+    const empty=document.createElement("span");
+    empty.className="empty-message";
+    empty.textContent="Projects will be added later.";
+    sectionEl.appendChild(empty);
+  }
+
+  section.items.forEach(item=>{
     const button=document.createElement("button");
-    button.textContent=project.title;
-    button.addEventListener("click",()=>openGallery(project.title,project.images,"project"));
-    wrap.appendChild(button);
+    button.textContent=item.title;
+    button.addEventListener("click",()=>{
+      if(item.children?.length) openCollection(item,section.title);
+      else openGallery(item.title,item.images||[],"project");
+    });
+    sectionEl.appendChild(button);
+
+    const images=flattenImages(item);
+    if(images.length){
+      projectFeedItems.push({
+        src:images[0],
+        title:item.title,
+        item,
+        sectionTitle:section.title
+      });
+    }
   });
-  projectList.appendChild(wrap);
+  projectList.appendChild(sectionEl);
+});
+createFeed(document.getElementById("projectFeed"),projectFeedItems,item=>{
+  if(item.item.children?.length) openCollection(item.item,item.sectionTitle);
+  else openGallery(item.item.title,item.item.images||[],"project");
 });
 
-const projectFeedItems=DATA.projects
-  .filter(p=>p.images.length)
-  .map((project,index)=>({
-    src:project.images[(index*3)%project.images.length],
-    title:project.title,
-    project
-  }));
-createFeed(document.getElementById("projectFeed"),projectFeedItems,item=>{
-  openGallery(item.project.title,item.project.images,"project");
-});
+function openCollection(item,sectionTitle){
+  document.getElementById("collectionTitle").textContent=item.title;
+  const list=document.getElementById("collectionList");
+  list.innerHTML="";
+  const feedItems=[];
+
+  item.children.forEach(child=>{
+    const button=document.createElement("button");
+    button.textContent=child.title;
+    button.addEventListener("click",()=>{
+      if(child.children?.length) openCollection(child,item.title);
+      else openGallery(child.title,child.images||[],"collection");
+    });
+    list.appendChild(button);
+    const images=flattenImages(child);
+    if(images.length){
+      feedItems.push({src:images[0],title:child.title,child});
+    }
+  });
+
+  createFeed(document.getElementById("collectionFeed"),feedItems,feedItem=>{
+    if(feedItem.child.children?.length) openCollection(feedItem.child,item.title);
+    else openGallery(feedItem.child.title,feedItem.child.images||[],"collection");
+  });
+  show("collection");
+}
+document.getElementById("collectionBack").addEventListener("click",()=>show("project"));
 
 const commercialList=document.getElementById("commercialList");
 const commercialFeedItems=[];
@@ -91,14 +137,13 @@ DATA.commercial.forEach(category=>{
   category.brands.forEach(brand=>{
     const button=document.createElement("button");
     button.textContent=brand.title;
-    button.addEventListener("click",()=>openBrand(category,brand));
+    button.addEventListener("click",()=>openBrand(brand));
     categoryEl.appendChild(button);
     brand.campaigns.forEach(campaign=>{
       if(campaign.images.length){
         commercialFeedItems.push({
           src:campaign.images[0],
           title:`${brand.title} — ${campaign.title}`,
-          category,
           brand,
           campaign
         });
@@ -111,13 +156,13 @@ createFeed(document.getElementById("commercialFeed"),commercialFeedItems,item=>{
   openGallery(`${item.brand.title} — ${item.campaign.title}`,item.campaign.images,"commercial");
 });
 
-function openBrand(category,brand){
-  currentBrand={category,brand};
+function openBrand(brand){
   document.getElementById("brandTitle").textContent=brand.title;
   document.getElementById("brandDescription").textContent=`Photography for ${brand.title}`;
   const campaignList=document.getElementById("campaignList");
   campaignList.innerHTML="";
-  const brandFeedItems=[];
+  const feedItems=[];
+
   if(!brand.campaigns.length){
     campaignList.innerHTML='<span class="empty-message">Campaign folders will appear here.</span>';
   }
@@ -130,11 +175,9 @@ function openBrand(category,brand){
       "brand"
     ));
     campaignList.appendChild(button);
-    campaign.images.forEach((src,index)=>{
-      brandFeedItems.push({src,title:campaign.title,campaign,index});
-    });
+    campaign.images.forEach(src=>feedItems.push({src,title:campaign.title,campaign}));
   });
-  createFeed(document.getElementById("brandFeed"),brandFeedItems,item=>{
+  createFeed(document.getElementById("brandFeed"),feedItems,item=>{
     openGallery(`${brand.title} — ${item.campaign.title}`,item.campaign.images,"brand");
   });
   show("brand");
