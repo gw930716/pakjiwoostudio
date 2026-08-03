@@ -224,7 +224,8 @@ DATA.commercial.forEach(category=>{
     button.addEventListener("click",()=>openBrand(brand));
     categoryEl.appendChild(button);
     brand.campaigns.forEach(campaign=>{
-      if(campaign.images.length){
+      const showInCommercialFeed = category.slug !== "event-interior";
+      if(showInCommercialFeed && campaign.images.length){
         commercialFeedItems.push({
           src:campaign.images[0],
           title:`${brand.title} — ${campaign.title}`,
