@@ -186,6 +186,13 @@ document.getElementById("brandBack").addEventListener("click",()=>show("commerci
 
 function openGallery(title,images,from){
   previousView=from;
+  const backLabels={
+    project:"← PROJECT",
+    commercial:"← COMMERCIAL",
+    brand:"← BRAND",
+    collection:"← PROJECT"
+  };
+  document.getElementById("backBtn").textContent=backLabels[from]||"← BACK";
   document.getElementById("detailTitle").textContent=title;
   const gallery=document.getElementById("detailGallery");
   gallery.innerHTML="";
