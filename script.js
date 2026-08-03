@@ -133,7 +133,7 @@ function createFeed(container,items,onClick){
   container.innerHTML="";
   items.filter(item=>item.src).forEach((item,index)=>{
     const figure=document.createElement("figure");
-    figure.className="feed-item";
+    figure.className=`feed-item feed-layout-${(index%8)+1}`;
     const image=document.createElement("img");
     image.src=item.src;
     image.loading="lazy";
