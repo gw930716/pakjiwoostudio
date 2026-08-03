@@ -26,7 +26,11 @@ function listDirs(dir) {
   if (!fs.existsSync(dir)) return [];
   return fs.readdirSync(dir, { withFileTypes: true })
     .filter(item => item.isDirectory() && !item.name.startsWith("."))
-    .map(item => item.name);
+    .map(item => item.name)
+    .filter(name => {
+      const meta = readMeta(path.join(dir, name), {});
+      return meta.hidden !== true;
+    });
 }
 function listImages(dir) {
   if (!fs.existsSync(dir)) return [];
