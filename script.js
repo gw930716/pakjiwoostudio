@@ -6,37 +6,121 @@ function show(id){
   views.forEach(v=>v.classList.toggle("active",v.id===id));
   currentView=id;
   document.getElementById(id)?.scrollTo(0,0);
+  if(id==="home")startHeroAutoplay();
+  else stopHeroAutoplay();
 }
 document.querySelectorAll("[data-route]").forEach(button=>{
   button.addEventListener("click",()=>show(button.dataset.route));
 });
 
-const heroImage=document.getElementById("heroImage");
-function renderHero(){
+const heroTrack=document.getElementById("heroTrack");
+const heroImageA=document.getElementById("heroImageA");
+const heroImageB=document.getElementById("heroImageB");
+const HERO_INTERVAL=2000;
+const HERO_DURATION=720;
+let heroTimer=null;
+let heroAnimating=false;
+let heroTouchStartX=null;
+
+function updateHeroCaption(){
   if(!DATA.home.length){
-    heroImage.removeAttribute("src");
     document.getElementById("heroCount").textContent="";
     return;
   }
   const item=DATA.home[heroIndex];
-  heroImage.style.opacity="0";
-  setTimeout(()=>{
-    heroImage.src=item.src;
-    document.getElementById("heroTitle").textContent=item.title||"HOME";
-    document.getElementById("heroCount").textContent=
-      `${String(heroIndex+1).padStart(2,"0")} / ${String(DATA.home.length).padStart(2,"0")}`;
-    heroImage.style.opacity="1";
-  },120);
+  document.getElementById("heroTitle").textContent=item.title||"HOME";
+  document.getElementById("heroCount").textContent=
+    `${String(heroIndex+1).padStart(2,"0")} / ${String(DATA.home.length).padStart(2,"0")}`;
 }
-document.getElementById("prevHero").addEventListener("click",()=>{
-  if(!DATA.home.length)return;
-  heroIndex=(heroIndex-1+DATA.home.length)%DATA.home.length;
-  renderHero();
-});
-document.getElementById("nextHero").addEventListener("click",()=>{
-  if(!DATA.home.length)return;
-  heroIndex=(heroIndex+1)%DATA.home.length;
-  renderHero();
+function preloadHero(index){
+  return new Promise(resolve=>{
+    if(!DATA.home.length){resolve();return;}
+    const img=new Image();
+    img.onload=resolve;
+    img.onerror=resolve;
+    img.src=DATA.home[index].src;
+  });
+}
+function resetHeroTrack(){
+  heroTrack.classList.remove("animating");
+  heroTrack.style.transform="translate3d(0,0,0)";
+}
+function renderInitialHero(){
+  if(!DATA.home.length){
+    heroImageA.removeAttribute("src");
+    heroImageB.removeAttribute("src");
+    updateHeroCaption();
+    return;
+  }
+  heroImageA.src=DATA.home[heroIndex].src;
+  heroImageB.src=DATA.home[(heroIndex+1)%DATA.home.length].src;
+  resetHeroTrack();
+  updateHeroCaption();
+}
+async function moveHero(direction=1,userInitiated=false){
+  if(heroAnimating||DATA.home.length<2)return;
+  heroAnimating=true;
+  const nextIndex=(heroIndex+direction+DATA.home.length)%DATA.home.length;
+  await preloadHero(nextIndex);
+
+  if(direction>0){
+    heroImageB.src=DATA.home[nextIndex].src;
+    heroTrack.classList.add("animating");
+    requestAnimationFrame(()=>heroTrack.style.transform="translate3d(-50%,0,0)");
+  }else{
+    heroImageB.src=DATA.home[nextIndex].src;
+    heroTrack.classList.remove("animating");
+    heroTrack.style.transform="translate3d(-50%,0,0)";
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      heroTrack.classList.add("animating");
+      heroTrack.style.transform="translate3d(0,0,0)";
+    }));
+  }
+
+  window.setTimeout(()=>{
+    heroIndex=nextIndex;
+    heroImageA.src=DATA.home[heroIndex].src;
+    heroImageB.src=DATA.home[(heroIndex+1)%DATA.home.length].src;
+    resetHeroTrack();
+    updateHeroCaption();
+    heroAnimating=false;
+  },HERO_DURATION+30);
+
+  if(userInitiated)restartHeroAutoplay();
+}
+function startHeroAutoplay(){
+  stopHeroAutoplay();
+  if(DATA.home.length>1){
+    heroTimer=window.setInterval(()=>{
+      if(currentView==="home"&&!document.hidden)moveHero(1,false);
+    },HERO_INTERVAL);
+  }
+}
+function stopHeroAutoplay(){
+  if(heroTimer){
+    window.clearInterval(heroTimer);
+    heroTimer=null;
+  }
+}
+function restartHeroAutoplay(){startHeroAutoplay();}
+
+document.getElementById("prevHero").addEventListener("click",()=>moveHero(-1,true));
+document.getElementById("nextHero").addEventListener("click",()=>moveHero(1,true));
+
+const heroViewport=document.getElementById("heroViewport");
+heroViewport.addEventListener("touchstart",event=>{
+  heroTouchStartX=event.changedTouches[0].clientX;
+},{passive:true});
+heroViewport.addEventListener("touchend",event=>{
+  if(heroTouchStartX===null)return;
+  const delta=event.changedTouches[0].clientX-heroTouchStartX;
+  heroTouchStartX=null;
+  if(Math.abs(delta)>40)moveHero(delta<0?1:-1,true);
+},{passive:true});
+
+document.addEventListener("visibilitychange",()=>{
+  if(document.hidden)stopHeroAutoplay();
+  else if(currentView==="home")startHeroAutoplay();
 });
 
 function flattenImages(node){
@@ -259,9 +343,10 @@ document.addEventListener("keydown",event=>{
     return;
   }
   if(currentView==="home"){
-    if(event.key==="ArrowLeft")document.getElementById("prevHero").click();
-    if(event.key==="ArrowRight")document.getElementById("nextHero").click();
+    if(event.key==="ArrowLeft")moveHero(-1,true);
+    if(event.key==="ArrowRight")moveHero(1,true);
   }
   if(event.key==="Escape"&&currentView==="detail")show(previousView);
 });
-renderHero();
+renderInitialHero();
+startHeroAutoplay();

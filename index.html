@@ -20,7 +20,12 @@
 <main>
   <section id="home" class="view active">
     <div class="hero">
-      <img id="heroImage" alt="Featured photograph">
+      <div id="heroViewport" class="hero-viewport">
+        <div id="heroTrack" class="hero-track">
+          <div class="hero-slide"><img id="heroImageA" alt="Featured photograph"></div>
+          <div class="hero-slide"><img id="heroImageB" alt="Featured photograph"></div>
+        </div>
+      </div>
       <button id="prevHero" class="hero-zone left" aria-label="Previous"></button>
       <button id="nextHero" class="hero-zone right" aria-label="Next"></button>
       <div class="hero-caption"><span id="heroTitle">HOME</span><span id="heroCount"></span></div>

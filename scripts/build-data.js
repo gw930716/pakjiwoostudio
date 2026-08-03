@@ -110,20 +110,34 @@ function scanCommercial() {
       brands: sortByMeta(categoryDir, listDirs(categoryDir)).map(brandSlug => {
         const brandDir = path.join(categoryDir, brandSlug);
         const brandMeta = readMeta(brandDir, { title: titleFromSlug(brandSlug) });
+        const directImages = listImages(brandDir).map(file =>
+          webPath("images", "commercial", categorySlug, brandSlug, file)
+        );
+        const nestedCampaigns = sortByMeta(brandDir, listDirs(brandDir)).map(campaignSlug => {
+          const campaignDir = path.join(brandDir, campaignSlug);
+          const campaignMeta = readMeta(campaignDir, { title: titleFromSlug(campaignSlug) });
+          return {
+            slug: campaignSlug,
+            title: campaignMeta.title,
+            images: listImages(campaignDir).map(file =>
+              webPath("images", "commercial", categorySlug, brandSlug, campaignSlug, file)
+            )
+          };
+        });
+        const campaigns = [];
+        if (directImages.length) {
+          campaigns.push({
+            slug: "_direct",
+            title: brandMeta.directTitle || brandMeta.title,
+            images: directImages,
+            direct: true
+          });
+        }
+        campaigns.push(...nestedCampaigns);
         return {
           slug: brandSlug,
           title: brandMeta.title,
-          campaigns: sortByMeta(brandDir, listDirs(brandDir)).map(campaignSlug => {
-            const campaignDir = path.join(brandDir, campaignSlug);
-            const campaignMeta = readMeta(campaignDir, { title: titleFromSlug(campaignSlug) });
-            return {
-              slug: campaignSlug,
-              title: campaignMeta.title,
-              images: listImages(campaignDir).map(file =>
-                webPath("images", "commercial", categorySlug, brandSlug, campaignSlug, file)
-              )
-            };
-          })
+          campaigns
         };
       })
     };
