@@ -140,24 +140,39 @@ function createFeed(container,items,onClick){
     image.alt=item.title||"";
     figure.addEventListener("click",()=>onClick(item,index));
     figure.appendChild(image);
+    if(item.title){
+      const caption=document.createElement("figcaption");
+      caption.className="feed-caption";
+      caption.textContent=item.title;
+      figure.appendChild(caption);
+    }
     container.appendChild(figure);
   });
 }
 
 const projectList=document.getElementById("projectList");
 const projectFeedItems=[];
+function collectProjectLeafFeed(node,sectionTitle,parentTitles=[]){
+  const pathTitles=[...parentTitles,node.title];
+  const children=node.children||[];
+  if(children.length){
+    children.forEach(child=>collectProjectLeafFeed(child,sectionTitle,pathTitles));
+    return;
+  }
+  if((node.images||[]).length){
+    projectFeedItems.push({src:node.images[0],title:pathTitles.join(" — "),item:node,sectionTitle});
+  }
+}
 DATA.projectSections.forEach(section=>{
   const sectionEl=document.createElement("div");
   sectionEl.className="project-group";
   sectionEl.innerHTML=`<h3>${section.title}</h3>`;
-
   if(!section.items.length){
     const empty=document.createElement("span");
     empty.className="empty-message";
     empty.textContent="Projects will be added later.";
     sectionEl.appendChild(empty);
   }
-
   section.items.forEach(item=>{
     const button=document.createElement("button");
     button.textContent=item.title;
@@ -166,22 +181,12 @@ DATA.projectSections.forEach(section=>{
       else openGallery(item.title,item.images||[],"project");
     });
     sectionEl.appendChild(button);
-
-    const images=flattenImages(item);
-    if(images.length){
-      projectFeedItems.push({
-        src:images[0],
-        title:item.title,
-        item,
-        sectionTitle:section.title
-      });
-    }
+    collectProjectLeafFeed(item,section.title);
   });
   projectList.appendChild(sectionEl);
 });
 createFeed(document.getElementById("projectFeed"),projectFeedItems,item=>{
-  if(item.item.children?.length) openCollection(item.item,item.sectionTitle);
-  else openGallery(item.item.title,item.item.images||[],"project");
+  openGallery(item.item.title,item.item.images||[],"project");
 });
 
 function openCollection(item,sectionTitle){
@@ -228,7 +233,7 @@ DATA.commercial.forEach(category=>{
       if(showInCommercialFeed && campaign.images.length){
         commercialFeedItems.push({
           src:campaign.images[0],
-          title:`${brand.title} — ${campaign.title}`,
+          title:campaign.direct?brand.title:`${brand.title} — ${campaign.title}`,
           brand,
           campaign
         });
