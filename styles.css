@@ -148,30 +148,252 @@ main{margin-left:210px;width:calc(100% - 210px)}
 .light-zone.left{left:0;cursor:w-resize}
 .light-zone.right{right:0;cursor:e-resize}
 .light-counter{position:absolute;z-index:20;bottom:16px;right:22px;font-size:9px;color:#777}
-@media(max-width:850px){
-.sidebar{width:132px;padding:28px 0 20px 18px}
-.brand{font-size:19px}
-main{margin-left:132px;width:calc(100% - 132px)}
-.hero{padding:36px 12px 46px 6px}
-.hero-viewport{width:100%;height:68vh}
-.hero-caption{left:0;right:10px}
-.archive,.brand-view,.collection-view,.contact{padding:28px 14px 80px}
-.detail{padding:0 14px 80px}
-.archive-head,.brand-head,.collection-head{grid-template-columns:1fr;gap:24px;margin-bottom:52px}
-.project-list,.commercial-list{grid-template-columns:1fr;gap:30px;max-width:100%}
-.project-group h3,.commercial-category h3{font-size:16px}
-/* MOBILE COLLAGE */
-.editorial-feed{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  column-gap:10px;
-  row-gap:28px;
-  padding-top:0;
+
+
+/* =========================================================
+   RESPONSIVE — desktop design above 1024px remains unchanged
+   ========================================================= */
+
+/* TABLET: 601px–1023px */
+@media (min-width:601px) and (max-width:1023px){
+  .sidebar{
+    width:168px;
+    padding:34px 0 24px 28px;
+  }
+  .brand{
+    font-size:22px;
+    margin-bottom:16px;
+  }
+  .sidebar nav button{font-size:10px}
+  main{
+    margin-left:168px;
+    width:calc(100% - 168px);
+  }
+
+  .hero{
+    padding:36px 34px 44px 18px;
+  }
+  .hero-viewport{
+    width:min(76vw,820px);
+    height:min(72vh,680px);
+  }
+
+  .archive,.brand-view,.collection-view{
+    padding:34px 24px 90px;
+  }
+  .contact{padding:34px 24px}
+  .detail{padding:0 24px 80px}
+
+  .archive-head,.brand-head,.collection-head{
+    grid-template-columns:112px minmax(0,1fr);
+    column-gap:18px;
+    margin-bottom:42px;
+  }
+  .project-list,.commercial-list{
+    grid-template-columns:repeat(2,minmax(160px,1fr));
+    column-gap:34px;
+    row-gap:28px;
+    max-width:none;
+  }
+
+  /* Keep the editorial rhythm, but use fewer columns on tablet */
+  .editorial-feed{
+    grid-template-columns:repeat(8,minmax(0,1fr));
+    column-gap:18px;
+    row-gap:64px;
+  }
+  .feed-layout-1{grid-column:1 / span 3}
+  .feed-layout-2{grid-column:5 / span 4;margin-top:24px}
+  .feed-layout-3{grid-column:6 / span 3}
+  .feed-layout-4{grid-column:1 / span 4;margin-top:12px}
+  .feed-layout-5{grid-column:5 / span 3}
+  .feed-layout-6{grid-column:1 / span 5;margin-top:20px}
+  .feed-layout-7{grid-column:5 / span 4}
+  .feed-layout-8{grid-column:2 / span 3;margin-top:8px}
+
+  .detail-gallery{gap:52px}
+  .detail-image{min-height:48svh}
 }
-.feed-layout-1,.feed-layout-4,.feed-layout-6,.feed-layout-8{grid-column:1 / span 1;margin-top:0}
-.feed-layout-2,.feed-layout-3,.feed-layout-5,.feed-layout-7{grid-column:2 / span 1;margin-top:18px}
-.feed-caption{display:none}
-.detail-top{min-height:50px;padding:16px 0 12px;margin-bottom:22px}
-#detailTitle{max-width:52vw}
-.lightbox-stage{width:calc(100vw - 24px);height:calc(100vh - 70px)}
+
+/* PHONE: 600px and below */
+@media (max-width:600px){
+  body{overflow:hidden}
+
+  /* Mobile navigation becomes a compact top header */
+  .sidebar{
+    position:fixed;
+    top:0;left:0;right:0;bottom:auto;
+    width:100%;
+    height:96px;
+    padding:18px 18px 14px;
+    display:block;
+    background:#fff;
+    border-bottom:1px solid rgba(0,0,0,.045);
+  }
+  .brand{
+    font-size:20px;
+    line-height:.9;
+    letter-spacing:-.06em;
+    margin:0 0 12px;
+  }
+  .sidebar nav{
+    flex-direction:row;
+    align-items:center;
+    gap:16px;
+    white-space:nowrap;
+  }
+  .sidebar nav button{
+    font-size:10px;
+    line-height:1;
+  }
+
+  main{
+    margin-left:0;
+    width:100%;
+    padding-top:96px;
+  }
+  .view{
+    height:calc(100svh - 96px);
+  }
+
+  /* Home */
+  .hero{
+    height:calc(100svh - 96px);
+    padding:18px 16px 38px;
+    align-items:center;
+  }
+  .hero-viewport{
+    width:100%;
+    height:68vh;
+  }
+  .hero-caption{
+    left:16px;
+    right:16px;
+    bottom:12px;
+  }
+
+  /* Lists */
+  .archive,.brand-view,.collection-view,.contact{
+    padding:24px 18px 70px;
+  }
+  .detail{
+    padding:0 16px 70px;
+  }
+  .archive-head,.brand-head,.collection-head{
+    grid-template-columns:1fr;
+    gap:18px;
+    margin-bottom:38px;
+  }
+  .eyebrow{font-size:9px}
+  .project-list,.commercial-list{
+    grid-template-columns:1fr;
+    gap:24px;
+    max-width:100%;
+  }
+  .project-group h3,.commercial-category h3{
+    font-size:15px;
+    margin-bottom:7px;
+  }
+  .project-group button,.commercial-category button,.campaign-list button{
+    font-size:12px;
+    line-height:1.45;
+  }
+  .brand-head h1,.collection-head h1{
+    font-size:18px;
+  }
+
+  /* Mobile collage:
+     one image per row, but widths and alignment alternate
+     so it still feels editorial instead of like a plain list. */
+  .editorial-feed{
+    display:flex;
+    flex-direction:column;
+    gap:34px;
+    padding:4px 0 76px;
+  }
+  .feed-item{
+    width:88%;
+    margin:0;
+  }
+  .feed-layout-1,
+  .feed-layout-4,
+  .feed-layout-6{
+    width:94%;
+    align-self:flex-start;
+  }
+  .feed-layout-2,
+  .feed-layout-5,
+  .feed-layout-7{
+    width:82%;
+    align-self:flex-end;
+  }
+  .feed-layout-3,
+  .feed-layout-8{
+    width:76%;
+    align-self:center;
+  }
+  .feed-item img{
+    width:100%;
+    height:auto;
+  }
+  .feed-caption{
+    display:none;
+  }
+
+  /* Detail gallery */
+  .detail-top{
+    min-height:48px;
+    padding:14px 0 11px;
+    margin-bottom:18px;
+    font-size:10px;
+  }
+  #detailTitle{
+    max-width:58vw;
+    font-size:10px;
+  }
+  .detail-gallery{
+    gap:34px;
+  }
+  .detail-image{
+    min-height:auto;
+  }
+  .detail-image img{
+    max-width:100%;
+    max-height:none;
+    width:auto;
+    height:auto;
+  }
+
+  /* Lightbox */
+  .lightbox-stage{
+    width:calc(100vw - 24px);
+    height:calc(100vh - 72px);
+  }
+  .close-lightbox{
+    right:8px;
+    top:6px;
+    font-size:28px;
+  }
+  .light-counter{
+    right:14px;
+    bottom:12px;
+  }
+}
+
+/* Very narrow phones */
+@media (max-width:380px){
+  .sidebar{
+    height:92px;
+    padding:16px 14px 12px;
+  }
+  .brand{
+    font-size:18px;
+    margin-bottom:11px;
+  }
+  .sidebar nav{gap:12px}
+  .sidebar nav button{font-size:9px}
+  main{padding-top:92px}
+  .view{height:calc(100svh - 92px)}
+  .hero{height:calc(100svh - 92px);padding-left:12px;padding-right:12px}
+  .archive,.brand-view,.collection-view,.contact{padding-left:14px;padding-right:14px}
 }
