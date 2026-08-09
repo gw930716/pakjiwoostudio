@@ -508,3 +508,338 @@ main{margin-left:210px;width:calc(100% - 210px)}
     left:14px;
   }
 }
+
+
+/* =========================================================
+   COMMERCIAL CAMPAIGN VIEWER
+   Reference-inspired single-image viewer with thumbnail strip.
+   ========================================================= */
+#detail.campaign-viewer-mode{
+  padding:0 28px 18px;
+  overflow:hidden;
+}
+
+#detail.campaign-viewer-mode .detail-top{
+  position:relative;
+  height:48px;
+  min-height:48px;
+  margin:0;
+  padding:15px 0 10px;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:start;
+  border:0;
+}
+#detail.campaign-viewer-mode .detail-top::after{display:none}
+#detail.campaign-viewer-mode #backBtn{
+  justify-self:start;
+  position:relative;
+  z-index:5;
+}
+#detail.campaign-viewer-mode #detailTitle{
+  justify-self:center;
+  margin:0;
+  max-width:55vw;
+  text-align:center;
+  text-transform:uppercase;
+  letter-spacing:.09em;
+  font-size:10px;
+}
+
+#detail.campaign-viewer-mode .detail-gallery{
+  display:block;
+  height:calc(100% - 48px);
+}
+
+.campaign-viewer{
+  position:relative;
+  width:100%;
+  height:100%;
+  min-height:0;
+  display:grid;
+  grid-template-rows:minmax(0,1fr) 26px 104px;
+  gap:8px;
+  overflow:hidden;
+}
+
+.campaign-view-all{
+  position:absolute;
+  top:0;
+  right:0;
+  z-index:20;
+  padding:0;
+  font-size:10px;
+  letter-spacing:.08em;
+  cursor:pointer;
+}
+
+.campaign-stage{
+  position:relative;
+  min-height:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:6px 82px 0;
+}
+
+.campaign-main-image{
+  display:block;
+  max-width:min(72vw,1120px);
+  max-height:calc(100vh - 210px);
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  cursor:zoom-in;
+  background:#fff;
+}
+
+.campaign-nav{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:8;
+  width:52px;
+  height:88px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:34px;
+  font-weight:200;
+  line-height:1;
+  cursor:pointer;
+  opacity:.72;
+}
+.campaign-nav:hover{opacity:.35}
+.campaign-prev{left:8px}
+.campaign-next{right:8px}
+
+.campaign-counter{
+  justify-self:end;
+  align-self:center;
+  min-width:86px;
+  font-size:9px;
+  letter-spacing:.08em;
+  text-align:right;
+}
+
+.campaign-thumbs{
+  display:flex;
+  align-items:end;
+  gap:12px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:0 2px 4px;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.campaign-thumbs::-webkit-scrollbar{display:none}
+
+.campaign-thumb{
+  flex:0 0 auto;
+  height:92px;
+  min-width:56px;
+  max-width:120px;
+  padding:0;
+  opacity:.27;
+  transition:opacity .18s ease;
+  cursor:pointer;
+}
+.campaign-thumb:hover{opacity:.62}
+.campaign-thumb.active{opacity:1}
+
+.campaign-thumb img{
+  display:block;
+  width:auto;
+  height:92px;
+  max-width:120px;
+  object-fit:contain;
+  background:#fff;
+}
+
+.campaign-all-grid{
+  display:none;
+  position:absolute;
+  inset:0;
+  z-index:15;
+  overflow:auto;
+  padding:42px 4px 28px;
+  background:rgba(255,255,255,.985);
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:34px 24px;
+  align-items:start;
+}
+.campaign-viewer.show-all .campaign-all-grid{display:grid}
+.campaign-viewer.show-all .campaign-stage,
+.campaign-viewer.show-all .campaign-counter,
+.campaign-viewer.show-all .campaign-thumbs{visibility:hidden}
+
+.campaign-all-item{
+  width:100%;
+  padding:0;
+  cursor:pointer;
+}
+.campaign-all-item img{
+  display:block;
+  width:100%;
+  height:auto;
+  object-fit:contain;
+}
+
+@media (min-width:601px) and (max-width:1023px){
+  #detail.campaign-viewer-mode{padding:0 18px 14px}
+  .campaign-viewer{grid-template-rows:minmax(0,1fr) 24px 88px}
+  .campaign-stage{padding:4px 50px 0}
+  .campaign-main-image{
+    max-width:76vw;
+    max-height:calc(100vh - 190px);
+  }
+  .campaign-thumb,.campaign-thumb img{height:76px}
+  .campaign-all-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 16px}
+}
+
+@media (max-width:600px){
+  #detail.campaign-viewer-mode{
+    padding:0 12px 10px;
+    height:calc(100svh - 96px);
+  }
+  #detail.campaign-viewer-mode .detail-top{
+    height:64px;
+    min-height:64px;
+    padding:10px 0 8px;
+    display:grid;
+    grid-template-columns:1fr auto;
+    grid-template-rows:auto auto;
+    row-gap:7px;
+  }
+  #detail.campaign-viewer-mode #backBtn{
+    grid-column:1;
+    grid-row:1;
+  }
+  #detail.campaign-viewer-mode #detailTitle{
+    grid-column:1 / -1;
+    grid-row:2;
+    justify-self:start;
+    max-width:88vw;
+    text-align:left;
+    font-size:10px;
+  }
+  #detail.campaign-viewer-mode .detail-gallery{
+    height:calc(100% - 64px);
+  }
+  .campaign-viewer{
+    grid-template-rows:minmax(0,1fr) 28px 78px;
+    gap:6px;
+  }
+  .campaign-view-all{
+    top:0;
+    right:0;
+    font-size:9px;
+  }
+  .campaign-stage{
+    padding:12px 0 0;
+  }
+  .campaign-main-image{
+    max-width:100%;
+    max-height:calc(100svh - 280px);
+  }
+  .campaign-nav{
+    top:auto;
+    bottom:-44px;
+    width:44px;
+    height:36px;
+    transform:none;
+    font-size:30px;
+  }
+  .campaign-prev{left:0}
+  .campaign-next{right:0}
+  .campaign-counter{
+    justify-self:center;
+    text-align:center;
+  }
+  .campaign-thumbs{
+    gap:8px;
+  }
+  .campaign-thumb,.campaign-thumb img{
+    height:66px;
+    max-width:86px;
+  }
+  .campaign-all-grid{
+    padding-top:34px;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:16px 10px;
+  }
+}
+
+
+/* =========================================================
+   DESKTOP — COMMERCIAL CATEGORY POSITIONING
+   Desired visual order:
+   Row 1: Fashion | Lifestyle / Wellness
+   Row 2: Artist  | Event / Interior
+   Row 3: Beauty / Skincare
+   ========================================================= */
+@media (min-width:1024px){
+  .commercial-list{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    grid-template-areas:
+      "fashion lifestyle"
+      "artist event"
+      "beauty .";
+    column-gap:clamp(52px,7vw,120px);
+    row-gap:clamp(48px,5.5vw,86px);
+    align-items:start;
+  }
+
+  .commercial-list > .commercial-category:nth-child(1){grid-area:fashion}
+  .commercial-list > .commercial-category:nth-child(2){grid-area:beauty}
+  .commercial-list > .commercial-category:nth-child(3){grid-area:lifestyle}
+  .commercial-list > .commercial-category:nth-child(4){grid-area:artist}
+  .commercial-list > .commercial-category:nth-child(5){grid-area:event}
+
+  /* Preserve the existing two-column Fashion brand list */
+  .commercial-list > .commercial-category:nth-child(1){
+    min-width:0;
+  }
+}
+
+/* Tablet keeps a clean two-column flow but follows the same hierarchy */
+@media (min-width:601px) and (max-width:1023px){
+  .commercial-list{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(160px,1fr));
+    grid-template-areas:
+      "fashion lifestyle"
+      "artist event"
+      "beauty .";
+    column-gap:34px;
+    row-gap:34px;
+  }
+
+  .commercial-list > .commercial-category:nth-child(1){grid-area:fashion}
+  .commercial-list > .commercial-category:nth-child(2){grid-area:beauty}
+  .commercial-list > .commercial-category:nth-child(3){grid-area:lifestyle}
+  .commercial-list > .commercial-category:nth-child(4){grid-area:artist}
+  .commercial-list > .commercial-category:nth-child(5){grid-area:event}
+}
+
+/* Phone returns to a simple readable single column */
+@media (max-width:600px){
+  .commercial-list{
+    display:grid;
+    grid-template-columns:1fr;
+    grid-template-areas:
+      "fashion"
+      "lifestyle"
+      "artist"
+      "event"
+      "beauty";
+    gap:24px;
+  }
+
+  .commercial-list > .commercial-category:nth-child(1){grid-area:fashion}
+  .commercial-list > .commercial-category:nth-child(2){grid-area:beauty}
+  .commercial-list > .commercial-category:nth-child(3){grid-area:lifestyle}
+  .commercial-list > .commercial-category:nth-child(4){grid-area:artist}
+  .commercial-list > .commercial-category:nth-child(5){grid-area:event}
+}

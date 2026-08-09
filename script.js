@@ -240,7 +240,8 @@ DATA.commercial.forEach(category=>{
     button.addEventListener("click",()=>openBrand(brand));
     categoryEl.appendChild(button);
     brand.campaigns.forEach(campaign=>{
-      const showInCommercialFeed = category.slug !== "event-interior";
+      const isSpotify=String(brand.title||"").trim().toLowerCase()==="spotify";
+      const showInCommercialFeed=!isSpotify;
       if(showInCommercialFeed && campaign.images.length){
         commercialFeedItems.push({
           src:campaign.images[0],
@@ -295,21 +296,156 @@ function openBrand(brand){
 }
 document.getElementById("brandBack").addEventListener("click",()=>show("commercial"));
 
-function openGallery(title,images,from,startIndex=0){
-  previousView=from;
-  const backLabels={
-    project:"← PROJECT",
-    commercial:"← COMMERCIAL",
-    brand:"← BRAND",
-    collection:"← PROJECT"
-  };
-  document.getElementById("backBtn").textContent=backLabels[from]||"← BACK";
-  document.getElementById("detailTitle").textContent=title;
+let campaignViewerState=null;
+
+function padCounter(value){
+  return String(value).padStart(2,"0");
+}
+
+function renderCampaignViewer(){
+  if(!campaignViewerState)return;
+  const {images}=campaignViewerState;
+  const index=campaignViewerState.index;
+  const mainImage=document.getElementById("campaignMainImage");
+  const counter=document.getElementById("campaignCounter");
+  if(mainImage)mainImage.src=images[index]||"";
+  if(counter)counter.textContent=`${padCounter(index+1)}  —  ${padCounter(images.length)}`;
+
+  document.querySelectorAll(".campaign-thumb").forEach((thumb,thumbIndex)=>{
+    thumb.classList.toggle("active",thumbIndex===index);
+    if(thumbIndex===index){
+      thumb.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
+    }
+  });
+}
+
+function moveCampaignViewer(direction){
+  if(!campaignViewerState?.images?.length)return;
+  const total=campaignViewerState.images.length;
+  campaignViewerState.index=(campaignViewerState.index+direction+total)%total;
+  renderCampaignViewer();
+}
+
+function buildCampaignViewer(title,images,startIndex=0){
   const gallery=document.getElementById("detailGallery");
   gallery.innerHTML="";
+  document.getElementById("detail").classList.add("campaign-viewer-mode");
+
+  const safeIndex=Math.max(0,Math.min(startIndex,Math.max(images.length-1,0)));
+  campaignViewerState={title,images,index:safeIndex,viewAll:false};
+
+  if(!images.length){
+    gallery.innerHTML='<div class="empty-message">Images will be added later.</div>';
+    return;
+  }
+
+  const viewer=document.createElement("div");
+  viewer.className="campaign-viewer";
+
+  const viewAll=document.createElement("button");
+  viewAll.className="campaign-view-all";
+  viewAll.textContent="VIEW ALL";
+
+  const stage=document.createElement("div");
+  stage.className="campaign-stage";
+
+  const prev=document.createElement("button");
+  prev.className="campaign-nav campaign-prev";
+  prev.setAttribute("aria-label","Previous image");
+  prev.textContent="‹";
+
+  const next=document.createElement("button");
+  next.className="campaign-nav campaign-next";
+  next.setAttribute("aria-label","Next image");
+  next.textContent="›";
+
+  const mainImage=document.createElement("img");
+  mainImage.id="campaignMainImage";
+  mainImage.className="campaign-main-image";
+  mainImage.alt=title;
+  mainImage.addEventListener("click",()=>{
+    if(campaignViewerState)openLightbox(images,campaignViewerState.index);
+  });
+
+  stage.append(prev,mainImage,next);
+
+  const counter=document.createElement("div");
+  counter.id="campaignCounter";
+  counter.className="campaign-counter";
+
+  const thumbs=document.createElement("div");
+  thumbs.className="campaign-thumbs";
+  images.forEach((src,index)=>{
+    const button=document.createElement("button");
+    button.className="campaign-thumb";
+    button.setAttribute("aria-label",`View image ${index+1}`);
+    const image=document.createElement("img");
+    image.src=src;
+    image.loading="lazy";
+    image.alt=`${title} thumbnail ${index+1}`;
+    button.appendChild(image);
+    button.addEventListener("click",()=>{
+      campaignViewerState.index=index;
+      renderCampaignViewer();
+    });
+    thumbs.appendChild(button);
+  });
+
+  const allGrid=document.createElement("div");
+  allGrid.className="campaign-all-grid";
+  images.forEach((src,index)=>{
+    const button=document.createElement("button");
+    button.className="campaign-all-item";
+    const image=document.createElement("img");
+    image.src=src;
+    image.loading="lazy";
+    image.alt=`${title} ${index+1}`;
+    button.appendChild(image);
+    button.addEventListener("click",()=>{
+      campaignViewerState.index=index;
+      viewer.classList.remove("show-all");
+      viewAll.textContent="VIEW ALL";
+      campaignViewerState.viewAll=false;
+      renderCampaignViewer();
+    });
+    allGrid.appendChild(button);
+  });
+
+  prev.addEventListener("click",()=>moveCampaignViewer(-1));
+  next.addEventListener("click",()=>moveCampaignViewer(1));
+
+  viewAll.addEventListener("click",()=>{
+    campaignViewerState.viewAll=!campaignViewerState.viewAll;
+    viewer.classList.toggle("show-all",campaignViewerState.viewAll);
+    viewAll.textContent=campaignViewerState.viewAll?"CLOSE":"VIEW ALL";
+  });
+
+  let touchStartX=null;
+  stage.addEventListener("touchstart",event=>{
+    touchStartX=event.changedTouches[0].clientX;
+  },{passive:true});
+  stage.addEventListener("touchend",event=>{
+    if(touchStartX===null)return;
+    const delta=event.changedTouches[0].clientX-touchStartX;
+    touchStartX=null;
+    if(Math.abs(delta)>38)moveCampaignViewer(delta<0?1:-1);
+  },{passive:true});
+
+  viewer.append(viewAll,stage,counter,thumbs,allGrid);
+  gallery.appendChild(viewer);
+  renderCampaignViewer();
+}
+
+function buildScrollGallery(title,images,startIndex=0){
+  const gallery=document.getElementById("detailGallery");
+  gallery.innerHTML="";
+  document.getElementById("detail").classList.remove("campaign-viewer-mode");
+  campaignViewerState=null;
+
   if(!images.length){
     gallery.innerHTML='<div class="empty-message">Images will be added later.</div>';
   }
+
   images.forEach((src,index)=>{
     const holder=document.createElement("div");
     holder.className="detail-image";
@@ -321,10 +457,7 @@ function openGallery(title,images,from,startIndex=0){
     holder.appendChild(image);
     gallery.appendChild(holder);
   });
-  show("detail");
 
-  // If the gallery was opened by clicking a collage image,
-  // jump directly to that exact image instead of starting at image 1.
   const safeIndex=Math.max(0,Math.min(startIndex,images.length-1));
   if(images.length && safeIndex>0){
     const target=gallery.children[safeIndex];
@@ -336,7 +469,31 @@ function openGallery(title,images,from,startIndex=0){
     }
   }
 }
-document.getElementById("backBtn").addEventListener("click",()=>show(previousView));
+
+function openGallery(title,images,from,startIndex=0){
+  previousView=from;
+  const backLabels={
+    project:"← PROJECT",
+    commercial:"← COMMERCIAL",
+    brand:"← BRAND",
+    collection:"← PROJECT"
+  };
+  document.getElementById("backBtn").textContent=backLabels[from]||"← BACK";
+  document.getElementById("detailTitle").textContent=title;
+
+  const useCampaignViewer=from==="brand" || from==="commercial";
+  if(useCampaignViewer){
+    buildCampaignViewer(title,images,startIndex);
+  }else{
+    buildScrollGallery(title,images,startIndex);
+  }
+  show("detail");
+}
+document.getElementById("backBtn").addEventListener("click",()=>{
+  document.getElementById("detail").classList.remove("campaign-viewer-mode");
+  campaignViewerState=null;
+  show(previousView);
+});
 
 const lightbox=document.getElementById("lightbox");
 const lightboxStage=document.getElementById("lightboxStage");
@@ -380,6 +537,21 @@ document.addEventListener("keydown",event=>{
     if(event.key==="Escape")closeLightbox();
     if(event.key==="ArrowLeft")document.getElementById("lightPrev").click();
     if(event.key==="ArrowRight")document.getElementById("lightNext").click();
+    return;
+  }
+  if(currentView==="detail" && campaignViewerState){
+    if(event.key==="ArrowLeft")moveCampaignViewer(-1);
+    if(event.key==="ArrowRight")moveCampaignViewer(1);
+    if(event.key==="Escape"){
+      if(campaignViewerState.viewAll){
+        document.querySelector(".campaign-viewer")?.classList.remove("show-all");
+        const viewAllButton=document.querySelector(".campaign-view-all");
+        if(viewAllButton)viewAllButton.textContent="VIEW ALL";
+        campaignViewerState.viewAll=false;
+      }else{
+        show(previousView);
+      }
+    }
     return;
   }
   if(currentView==="home"){
