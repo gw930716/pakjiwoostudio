@@ -138,6 +138,17 @@ function createFeed(container,items,onClick){
     image.src=item.src;
     image.loading="lazy";
     image.alt=item.title||"";
+    image.addEventListener("load",()=>{
+      figure.classList.remove("is-landscape","is-portrait","is-squareish");
+      const ratio=image.naturalWidth/image.naturalHeight;
+      if(ratio>1.18){
+        figure.classList.add("is-landscape");
+      }else if(ratio<0.88){
+        figure.classList.add("is-portrait");
+      }else{
+        figure.classList.add("is-squareish");
+      }
+    });
     figure.addEventListener("click",()=>onClick(item,index));
     figure.appendChild(image);
     if(item.title){

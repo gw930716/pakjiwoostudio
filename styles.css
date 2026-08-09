@@ -425,3 +425,44 @@ main{margin-left:210px;width:calc(100% - 210px)}
     width:100%;
   }
 }
+
+
+/* =========================================================
+   DESKTOP — LANDSCAPE IMAGE EMPHASIS
+   Horizontal photographs receive more visual weight in
+   Project / Commercial editorial feeds.
+   ========================================================= */
+@media (min-width:1024px){
+  .editorial-feed .feed-layout-1.is-landscape{grid-column:1 / span 6}
+  .editorial-feed .feed-layout-2.is-landscape{grid-column:6 / span 7}
+  .editorial-feed .feed-layout-3.is-landscape{grid-column:7 / span 6}
+  .editorial-feed .feed-layout-4.is-landscape{grid-column:1 / span 7}
+  .editorial-feed .feed-layout-5.is-landscape{grid-column:6 / span 6}
+  .editorial-feed .feed-layout-6.is-landscape{grid-column:1 / span 8}
+  .editorial-feed .feed-layout-7.is-landscape{grid-column:5 / span 8}
+  .editorial-feed .feed-layout-8.is-landscape{grid-column:3 / span 7}
+}
+
+/* Tablet: enlarge horizontal photos, but less aggressively */
+@media (min-width:601px) and (max-width:1023px){
+  .editorial-feed .feed-layout-1.is-landscape,
+  .editorial-feed .feed-layout-4.is-landscape,
+  .editorial-feed .feed-layout-6.is-landscape{
+    grid-column:1 / span 6;
+  }
+  .editorial-feed .feed-layout-2.is-landscape,
+  .editorial-feed .feed-layout-3.is-landscape,
+  .editorial-feed .feed-layout-5.is-landscape,
+  .editorial-feed .feed-layout-7.is-landscape,
+  .editorial-feed .feed-layout-8.is-landscape{
+    grid-column:3 / span 6;
+  }
+}
+
+/* Phone: wide photos use nearly the full screen width */
+@media (max-width:600px){
+  .editorial-feed .feed-item.is-landscape{
+    width:96%;
+    align-self:center;
+  }
+}
