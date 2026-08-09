@@ -265,16 +265,26 @@ function openBrand(brand){
       "brand"
     ));
     campaignList.appendChild(button);
-    campaign.images.forEach(src=>feedItems.push({src,title:campaign.title,campaign}));
+    campaign.images.forEach((src,imageIndex)=>feedItems.push({
+      src,
+      title:campaign.title,
+      campaign,
+      imageIndex
+    }));
   });
   createFeed(document.getElementById("brandFeed"),feedItems,item=>{
-    openGallery(`${brand.title} — ${item.campaign.title}`,item.campaign.images,"brand");
+    openGallery(
+      `${brand.title} — ${item.campaign.title}`,
+      item.campaign.images,
+      "brand",
+      item.imageIndex
+    );
   });
   show("brand");
 }
 document.getElementById("brandBack").addEventListener("click",()=>show("commercial"));
 
-function openGallery(title,images,from){
+function openGallery(title,images,from,startIndex=0){
   previousView=from;
   const backLabels={
     project:"← PROJECT",
@@ -301,6 +311,19 @@ function openGallery(title,images,from){
     gallery.appendChild(holder);
   });
   show("detail");
+
+  // If the gallery was opened by clicking a collage image,
+  // jump directly to that exact image instead of starting at image 1.
+  const safeIndex=Math.max(0,Math.min(startIndex,images.length-1));
+  if(images.length && safeIndex>0){
+    const target=gallery.children[safeIndex];
+    if(target){
+      target.style.scrollMarginTop="64px";
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        target.scrollIntoView({block:"start",behavior:"auto"});
+      }));
+    }
+  }
 }
 document.getElementById("backBtn").addEventListener("click",()=>show(previousView));
 
