@@ -258,12 +258,10 @@ DATA.commercial.forEach(category=>{
 // Brands not listed here keep their existing relative order afterwards.
 const commercialFeedPriority=[
   "topten",
-  "neev",
   "descente",
   "marithe",
+  "neev",
   "unanswered mystery",
-  "taeseoul",
-  "loeil",
   "ovrl"
 ];
 
