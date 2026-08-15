@@ -254,6 +254,32 @@ DATA.commercial.forEach(category=>{
   });
   commercialList.appendChild(categoryEl);
 });
+// Commercial feed: manually prioritized recent-work brands first.
+// Brands not listed here keep their existing relative order afterwards.
+const commercialFeedPriority=[
+  "topten",
+  "neev",
+  "descente",
+  "marithe",
+  "unanswered mystery",
+  "taeseoul",
+  "loeil",
+  "ovrl"
+];
+
+const normalizeCommercialBrand=value=>
+  String(value||"").trim().toLowerCase().replace(/[\s\-_/]+/g,"");
+
+commercialFeedItems.sort((a,b)=>{
+  const aKey=normalizeCommercialBrand(a.brand?.title);
+  const bKey=normalizeCommercialBrand(b.brand?.title);
+  const aRank=commercialFeedPriority.findIndex(name=>aKey===normalizeCommercialBrand(name));
+  const bRank=commercialFeedPriority.findIndex(name=>bKey===normalizeCommercialBrand(name));
+  const safeARank=aRank===-1?Number.MAX_SAFE_INTEGER:aRank;
+  const safeBRank=bRank===-1?Number.MAX_SAFE_INTEGER:bRank;
+  return safeARank-safeBRank;
+});
+
 createFeed(document.getElementById("commercialFeed"),commercialFeedItems,item=>{
   openGallery(`${item.brand.title} — ${item.campaign.title}`,item.campaign.images,"commercial");
 });
