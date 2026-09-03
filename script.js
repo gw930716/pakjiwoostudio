@@ -257,26 +257,41 @@ DATA.commercial.forEach(category=>{
 // Commercial feed: manually prioritized recent-work brands first.
 // Brands not listed here keep their existing relative order afterwards.
 const commercialFeedPriority=[
-  "topten",
-  "descente",
-  "marithe",
-  "neev",
-  "unanswered mystery",
-  "ovrl"
+  { brand:"topten" },
+  { brand:"lecoq", campaign:"26 Fall Campaign" },
+  { brand:"marithe", campaign:"26 FW Fall Winter Campaign" },
+  { brand:"neev" },
+  { brand:"descente" },
+  { brand:"marithe" },
+  { brand:"unanswered mystery" },
+  { brand:"taeseoul" },
+  { brand:"loeil" },
+  { brand:"ovrl" }
 ];
 
-const normalizeCommercialBrand=value=>
-  String(value||"").trim().toLowerCase().replace(/[\s\-_/]+/g,"");
+const normalizeCommercialValue=value=>
+  String(value||"")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g,"");
 
-commercialFeedItems.sort((a,b)=>{
-  const aKey=normalizeCommercialBrand(a.brand?.title);
-  const bKey=normalizeCommercialBrand(b.brand?.title);
-  const aRank=commercialFeedPriority.findIndex(name=>aKey===normalizeCommercialBrand(name));
-  const bRank=commercialFeedPriority.findIndex(name=>bKey===normalizeCommercialBrand(name));
-  const safeARank=aRank===-1?Number.MAX_SAFE_INTEGER:aRank;
-  const safeBRank=bRank===-1?Number.MAX_SAFE_INTEGER:bRank;
-  return safeARank-safeBRank;
-});
+function getCommercialPriorityRank(item){
+  const brandKey=normalizeCommercialValue(item.brand?.title);
+  const campaignKey=normalizeCommercialValue(item.campaign?.title);
+
+  const rank=commercialFeedPriority.findIndex(priority=>{
+    const wantedBrand=normalizeCommercialValue(priority.brand);
+    const wantedCampaign=normalizeCommercialValue(priority.campaign);
+    const brandMatches=brandKey.includes(wantedBrand);
+    const campaignMatches=!priority.campaign || campaignKey.includes(wantedCampaign);
+    return brandMatches && campaignMatches;
+  });
+
+  return rank===-1?Number.MAX_SAFE_INTEGER:rank;
+}
+
+commercialFeedItems.sort((a,b)=>getCommercialPriorityRank(a)-getCommercialPriorityRank(b));
 
 createFeed(document.getElementById("commercialFeed"),commercialFeedItems,item=>{
   openGallery(`${item.brand.title} — ${item.campaign.title}`,item.campaign.images,"commercial");
