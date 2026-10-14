@@ -12,16 +12,6 @@ window.PROJECT_INTROS = {
 
   "These might look like ordinary travel photographs, the kind anyone could take. But to me, every single frame is personal and precious. They are moments I will carry with me and remember for a long time."
 ]
-
-    ]
-  },
-  "Tokyo Vol. 2": {
-    category: "TRAVEL SERIES — JAPAN",
-    heading: "Tokyo Trip",
-    date: "2026.09.20 — 2026.10.05",
-    paragraphs: [
-      "이번 일본 여행은 엄마와 여동생과 함께했다.",
-      "여기에 도쿄 여행에 대한 이야기를 자유롭게 적어주세요. 이 문장을 원하는 글로 바꾸면 됩니다."
-    ]
   }
 };
+
