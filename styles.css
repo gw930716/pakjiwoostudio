@@ -862,7 +862,7 @@ body{overflow-x:hidden;overflow-y:auto}
 .campaign-all-grid{background:var(--page-overlay-strong)}
 :root[data-theme="black"] .sidebar{border-color:var(--page-rule)}
 :root[data-theme="black"] .feed-item,:root[data-theme="black"] .campaign-stage{background:var(--page-bg)}
-.theme-toggle{position:fixed;z-index:110;bottom:24px;right:26px;padding:9px 12px;cursor:pointer;background:var(--page-bg);color:var(--page-fg);border:1px solid var(--page-rule);font-size:10px;letter-spacing:.06em;line-height:1.2}
+.theme-toggle{position:fixed;z-index:110;bottom:24px;left:26px;right:auto;padding:9px 12px;cursor:pointer;background:var(--page-bg);color:var(--page-fg);border:1px solid var(--page-rule);font-size:10px;letter-spacing:.06em;line-height:1.2}
 .theme-toggle:hover{opacity:.55}
 @media(max-width:600px){
   .sidebar{position:relative;top:auto;left:auto;right:auto;bottom:auto;border-color:var(--page-rule)}
@@ -870,6 +870,14 @@ body{overflow-x:hidden;overflow-y:auto}
   .view{height:auto;min-height:calc(100svh - 96px)}
   .hero{height:calc(100svh - 96px)}
   #brandBack{top:12px;left:18px}
-  .theme-toggle{bottom:18px;right:16px}
+  .theme-toggle{bottom:18px;left:16px;right:auto}
 }
 @media(max-width:380px){.view{height:auto;min-height:calc(100svh - 92px)}.hero{height:calc(100svh - 92px)}#brandBack{top:12px;left:14px}}
+
+/* Editorial text above the first photograph on selected project pages */
+.project-intro{grid-column:1/-1;box-sizing:border-box;width:100%;padding:clamp(44px,7vw,112px) clamp(12px,6vw,110px) clamp(68px,9vw,145px);color:var(--page-fg);font-family:"Helvetica Neue",Arial,sans-serif}
+.project-intro-category{font-size:10px;letter-spacing:.075em;opacity:.58;margin-bottom:27px}
+.project-intro h2{font-size:clamp(27px,3vw,48px);font-weight:400;letter-spacing:-.035em;line-height:1.13;margin:0 0 15px}
+.project-intro-date{font-size:12px;letter-spacing:.015em;opacity:.62;margin:0 0 43px}
+.project-intro-paragraph{font-size:clamp(13px,1.15vw,15px);line-height:1.95;max-width:560px;margin:0 0 15px;word-break:keep-all;overflow-wrap:anywhere}
+@media(max-width:700px){.project-intro{padding:60px 12px 78px}.project-intro-date{margin-bottom:30px}}

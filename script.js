@@ -476,11 +476,50 @@ function buildCampaignViewer(title,images,startIndex=0){
   renderCampaignViewer();
 }
 
+// Optional editorial introductions, keyed by the gallery title.
+// Edit project-intros.js to add or update writing without touching the image data.
+function addProjectIntroduction(gallery,title){
+  const introductions=window.PROJECT_INTROS||{};
+  const key=title.toLowerCase().replace(/[^a-z0-9]+/g,"");
+  const entry=Object.entries(introductions).find(([name])=>
+    name.toLowerCase().replace(/[^a-z0-9]+/g,"")===key
+  );
+  if(!entry)return;
+  const info=entry[1];
+  const intro=document.createElement("header");
+  intro.className="project-intro";
+  if(info.category){
+    const category=document.createElement("div");
+    category.className="project-intro-category";
+    category.textContent=info.category;
+    intro.appendChild(category);
+  }
+  if(info.heading){
+    const heading=document.createElement("h2");
+    heading.textContent=info.heading;
+    intro.appendChild(heading);
+  }
+  if(info.date){
+    const date=document.createElement("p");
+    date.className="project-intro-date";
+    date.textContent=info.date;
+    intro.appendChild(date);
+  }
+  (info.paragraphs||[]).filter(Boolean).forEach(paragraph=>{
+    const element=document.createElement("p");
+    element.className="project-intro-paragraph";
+    element.textContent=paragraph;
+    intro.appendChild(element);
+  });
+  gallery.appendChild(intro);
+}
+
 function buildScrollGallery(title,images,startIndex=0){
   const gallery=document.getElementById("detailGallery");
   gallery.innerHTML="";
   document.getElementById("detail").classList.remove("campaign-viewer-mode");
   campaignViewerState=null;
+  if(startIndex===0)addProjectIntroduction(gallery,title);
 
   if(!images.length){
     gallery.innerHTML='<div class="empty-message">Images will be added later.</div>';
@@ -500,7 +539,7 @@ function buildScrollGallery(title,images,startIndex=0){
 
   const safeIndex=Math.max(0,Math.min(startIndex,images.length-1));
   if(images.length && safeIndex>0){
-    const target=gallery.children[safeIndex];
+    const target=gallery.querySelectorAll(".detail-image")[safeIndex];
     if(target){
       target.style.scrollMarginTop="64px";
       requestAnimationFrame(()=>requestAnimationFrame(()=>{
