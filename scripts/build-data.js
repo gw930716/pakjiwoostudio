@@ -159,7 +159,7 @@ fs.writeFileSync(
   `window.PORTFOLIO_DATA = ${JSON.stringify(data, null, 2)};\n`,
   "utf8"
 );
-for (const file of ["index.html", "styles.css", "script.js"]) {
+for (const file of ["index.html", "styles.css", "script.js", "project-intros.js"]) {
   fs.copyFileSync(path.join(ROOT, file), path.join(DIST, file));
 }
 copyRecursive(IMAGES, path.join(DIST, "images"));
