@@ -843,3 +843,33 @@ main{margin-left:210px;width:calc(100% - 210px)}
   .commercial-list > .commercial-category:nth-child(4){grid-area:artist}
   .commercial-list > .commercial-category:nth-child(5){grid-area:event}
 }
+
+/* =========================================================
+   GLOBAL THEME + SHARED PAGE SCROLL (2026-10)
+   ========================================================= */
+:root{--page-bg:#fff;--page-fg:#111;--page-muted:#777;--page-overlay:rgba(255,255,255,.96);--page-overlay-strong:rgba(255,255,255,.985);--page-rule:rgba(0,0,0,.05)}
+:root[data-theme="black"]{color-scheme:dark;--page-bg:#080808;--page-fg:#f5f5f5;--page-muted:#aaa;--page-overlay:rgba(8,8,8,.96);--page-overlay-strong:rgba(8,8,8,.985);--page-rule:rgba(255,255,255,.14)}
+html,body{background:var(--page-bg);color:var(--page-fg)}
+body{overflow-x:hidden;overflow-y:auto}
+.sidebar{position:absolute;bottom:auto;background:var(--page-bg)}
+.view{height:auto;min-height:100svh;overflow:visible;background:var(--page-bg)}
+.hero-viewport,.hero-slide,.hero-slide img,.feed-item,.detail-image img,.lightbox-stage img,.campaign-thumb img{background:var(--page-bg)}
+.project-group h3,.commercial-category h3{color:var(--page-fg)}
+.hero-caption,.eyebrow,.brand-head p,.light-counter{color:var(--page-muted)}
+.lightbox,.detail-top{background:var(--page-bg)}
+.detail-top::after{background:var(--page-rule)}
+#brandBack{background:var(--page-overlay)}
+.campaign-all-grid{background:var(--page-overlay-strong)}
+:root[data-theme="black"] .sidebar{border-color:var(--page-rule)}
+:root[data-theme="black"] .feed-item,:root[data-theme="black"] .campaign-stage{background:var(--page-bg)}
+.theme-toggle{position:fixed;z-index:110;bottom:24px;right:26px;padding:9px 12px;cursor:pointer;background:var(--page-bg);color:var(--page-fg);border:1px solid var(--page-rule);font-size:10px;letter-spacing:.06em;line-height:1.2}
+.theme-toggle:hover{opacity:.55}
+@media(max-width:600px){
+  .sidebar{position:relative;top:auto;left:auto;right:auto;bottom:auto;border-color:var(--page-rule)}
+  main{padding-top:0}
+  .view{height:auto;min-height:calc(100svh - 96px)}
+  .hero{height:calc(100svh - 96px)}
+  #brandBack{top:12px;left:18px}
+  .theme-toggle{bottom:18px;right:16px}
+}
+@media(max-width:380px){.view{height:auto;min-height:calc(100svh - 92px)}.hero{height:calc(100svh - 92px)}#brandBack{top:12px;left:14px}}

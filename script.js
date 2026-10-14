@@ -5,6 +5,7 @@ let currentView="home",previousView="project",heroIndex=0,currentLightImages=[],
 function show(id){
   views.forEach(v=>v.classList.toggle("active",v.id===id));
   currentView=id;
+  window.scrollTo(0,0);
   document.getElementById(id)?.scrollTo(0,0);
   if(id==="home")startHeroAutoplay();
   else stopHeroAutoplay();
@@ -601,3 +602,20 @@ document.addEventListener("keydown",event=>{
 });
 renderInitialHero();
 startHeroAutoplay();
+
+// Persistent global background theme.
+const themeToggle=document.getElementById("themeToggle");
+function updateThemeToggle(){
+  const black=document.documentElement.dataset.theme==="black";
+  themeToggle.textContent=black?"WHITE":"BLACK";
+  themeToggle.setAttribute("aria-label",black?"Switch to white theme":"Switch to black theme");
+  themeToggle.setAttribute("aria-pressed",String(black));
+}
+themeToggle.addEventListener("click",()=>{
+  const black=document.documentElement.dataset.theme!=="black";
+  if(black)document.documentElement.dataset.theme="black";
+  else delete document.documentElement.dataset.theme;
+  try{localStorage.setItem("pjw-theme",black?"black":"white")}catch(e){}
+  updateThemeToggle();
+});
+updateThemeToggle();
