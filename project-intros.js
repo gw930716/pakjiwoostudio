@@ -6,9 +6,9 @@ window.PROJECT_INTROS = {
     heading: "Tokyo Trip",
     date: "2026.09.20 — 2026.10.05",
     paragraphs: [
-  "This was my first trip to Japan with my mother and my younger sister, Jia. Of course, they only stayed for the first three days before returning to their own homes. I stayed in Tokyo for another thirteen days, spending my time wandering around and exploring different places.",
+  "This was my first time visiting Japan with my family including my sister Jiah. My family stayed for only three days which meant I will be wondering around Tokyo by myself for the next 13 more days. ",
 
-  "My goal for this trip was simple. If something caught my eye, even just a little, I wanted to photograph it without hesitation. It might sound like nothing special, but carrying a camera and trying to capture every little thing that interests me takes a great deal of energy. I walked and walked, sometimes losing interest, only to find it again. There were moments when I felt completely focused, and others when my mind wandered. Whatever the experience, I kept walking, hoping that this time would somehow be meaningful to me.",
+  "It was a very difficult time for me emotionally. So I walked and walked taking photos of things that seemed interesting. Japan wasn't as interesting compared to the times I visited in the past. Maybe because I was all lone this time. Anyways, looking at all these photos, it seems very ordinary and boring maybe ",
 
   "These might look like ordinary travel photographs, the kind anyone could take. But to me, every single frame is personal and precious. They are moments I will carry with me and remember for a long time."
 ]
