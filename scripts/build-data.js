@@ -111,7 +111,12 @@ function scanCommercial() {
       slug: categorySlug,
       title: categoryMeta.title,
       order: categoryMeta.order ?? 9999,
-      brands: sortByMeta(categoryDir, listDirs(categoryDir)).map(brandSlug => {
+      brands: sortByMeta(categoryDir, listDirs(categoryDir))
+        .sort((a, b) => {
+          const isHunter = slug => slug.toLowerCase().replace(/[^a-z0-9]/g, "").startsWith("hunter");
+          return Number(isHunter(b)) - Number(isHunter(a));
+        })
+        .map(brandSlug => {
         const brandDir = path.join(categoryDir, brandSlug);
         const brandMeta = readMeta(brandDir, { title: titleFromSlug(brandSlug) });
         const directImages = listImages(brandDir).map(file =>
