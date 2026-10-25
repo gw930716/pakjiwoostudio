@@ -258,6 +258,7 @@ DATA.commercial.forEach(category=>{
 // Commercial feed: manually prioritized recent-work brands first.
 // Brands not listed here keep their existing relative order afterwards.
 const commercialFeedPriority=[
+  { brand:"hunter" },
   { brand:"topten" },
   { brand:"lecoq", campaign:"26 Fall Campaign" },
   { brand:"marithe", campaign:"26 FW Fall Winter Campaign" },
